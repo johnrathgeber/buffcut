@@ -5,7 +5,7 @@ import { addCardio } from '@/app/actions';
 import { CARDIO_TYPES } from '@/lib/types';
 
 export default function CardioForm() {
-  const [type, setType] = useState(CARDIO_TYPES[0]);
+  const [type, setType] = useState<string>(CARDIO_TYPES[0]);
   const [duration, setDuration] = useState('');
   const [caloriesBurned, setCaloriesBurned] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
