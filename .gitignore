@@ -36,3 +36,9 @@ next-env.d.ts
 
 # IMPORTANT: Personal fitness tracking data - DO NOT COMMIT
 tracker_data.json
+
+# Personal launcher scripts (contain machine-specific paths)
+start-buffcut.sh
+buffcut.desktop
+BuffCut.bat
+*.lnk
