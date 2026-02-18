@@ -1,5 +1,6 @@
 'use server';
 
+import OpenAI from 'openai';
 import { revalidatePath } from 'next/cache';
 import {
   readData,
@@ -102,6 +103,40 @@ export async function updateDaySteps(date: string, steps: number) {
   revalidatePath('/');
   revalidatePath('/history');
   return { success: true };
+}
+
+export async function estimateNutrition(foodName: string): Promise<{ protein: number; calories: number; error?: string }> {
+  try {
+    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+    const response = await client.chat.completions.create({
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a nutrition expert. When given a food item, respond with ONLY a JSON object containing estimated protein (in grams) and calories. No explanation, just JSON. Example: {"protein": 25, "calories": 300}. Round to nearest whole number. If the food is vague or unclear, give a reasonable average estimate.',
+        },
+        {
+          role: 'user',
+          content: `Estimate the protein (grams) and calories for: ${foodName}`,
+        },
+      ],
+      max_tokens: 50,
+      temperature: 0,
+    });
+
+    const content = response.choices[0]?.message?.content?.trim();
+    if (!content) throw new Error('No response from AI');
+
+    const parsed = JSON.parse(content);
+    return {
+      protein: Math.max(0, Math.round(parsed.protein)),
+      calories: Math.max(0, Math.round(parsed.calories)),
+    };
+  } catch (error) {
+    console.error('OpenAI error:', error);
+    return { protein: 0, calories: 0, error: 'Failed to estimate nutrition. Try again or enter manually.' };
+  }
 }
 
 export async function getHistoryData(): Promise<DayEntry[]> {
