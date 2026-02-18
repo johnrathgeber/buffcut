@@ -1,6 +1,7 @@
 import { getDashboardData } from './actions';
 import WeightDisplay from '@/components/WeightDisplay';
 import GoalProgress from '@/components/GoalProgress';
+import StepsInput from '@/components/StepsInput';
 import QuickAddButtons from '@/components/QuickAddButtons';
 import CustomFoodForm from '@/components/CustomFoodForm';
 import CardioForm from '@/components/CardioForm';
@@ -18,8 +19,8 @@ export default async function Home() {
     <div className="space-y-6 pb-8">
       <h1 className="text-3xl font-bold text-white mb-6">Dashboard</h1>
 
-      {/* Weight and Goals Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Weight, Goals, and Steps Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <WeightDisplay
           weight={weightData.weight}
           lastUpdated={weightData.lastUpdated}
@@ -30,6 +31,7 @@ export default async function Home() {
           totalProtein={totalProtein}
           totalCalories={totalCalories}
         />
+        <StepsInput currentSteps={todayEntry?.steps || 0} />
       </div>
 
       {/* Quick Add Foods */}

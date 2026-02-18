@@ -18,6 +18,7 @@ export interface DayEntry {
   weightUpdated: boolean;
   foods: FoodEntry[];
   cardio: CardioEntry[];
+  steps: number;
 }
 
 export interface TrackerData {

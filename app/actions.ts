@@ -76,6 +76,34 @@ export async function addCardio(cardio: { type: string; duration: number; calori
   return { success: true };
 }
 
+export async function updateSteps(steps: number) {
+  const data = readData();
+  ensureTodayEntry(data);
+
+  const todayEntry = getTodayEntry(data);
+  if (todayEntry) {
+    todayEntry.steps = steps;
+    writeData(data);
+  }
+
+  revalidatePath('/');
+  return { success: true };
+}
+
+export async function updateDaySteps(date: string, steps: number) {
+  const data = readData();
+  const dayEntry = data.entries.find(entry => entry.date === date);
+
+  if (dayEntry) {
+    dayEntry.steps = steps;
+    writeData(data);
+  }
+
+  revalidatePath('/');
+  revalidatePath('/history');
+  return { success: true };
+}
+
 export async function getHistoryData(): Promise<DayEntry[]> {
   const data = readData();
   return data.entries.sort((a, b) => b.date.localeCompare(a.date));

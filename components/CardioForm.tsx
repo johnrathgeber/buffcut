@@ -5,21 +5,32 @@ import { addCardio } from '@/app/actions';
 import { CARDIO_TYPES } from '@/lib/types';
 
 export default function CardioForm() {
-  const [type, setType] = useState<string>(CARDIO_TYPES[0]);
+  const [selectedPreset, setSelectedPreset] = useState<string>(CARDIO_TYPES[0]);
+  const [customType, setCustomType] = useState('');
   const [duration, setDuration] = useState('');
   const [caloriesBurned, setCaloriesBurned] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const isCustom = selectedPreset === 'Custom';
+  const actualType = isCustom ? customType : selectedPreset;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isCustom && !customType.trim()) {
+      return; // Don't submit if custom is selected but no type entered
+    }
+
     setIsSubmitting(true);
 
     await addCardio({
-      type,
+      type: actualType,
       duration: parseInt(duration),
       caloriesBurned: parseInt(caloriesBurned),
     });
 
+    setSelectedPreset(CARDIO_TYPES[0]);
+    setCustomType('');
     setDuration('');
     setCaloriesBurned('');
     setIsSubmitting(false);
@@ -34,8 +45,8 @@ export default function CardioForm() {
             Cardio Type
           </label>
           <select
-            value={type}
-            onChange={(e) => setType(e.target.value)}
+            value={selectedPreset}
+            onChange={(e) => setSelectedPreset(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
           >
             {CARDIO_TYPES.map((cardioType) => (
@@ -43,8 +54,26 @@ export default function CardioForm() {
                 {cardioType}
               </option>
             ))}
+            <option value="Custom">Custom (type your own)</option>
           </select>
         </div>
+
+        {isCustom && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Custom Cardio Type
+            </label>
+            <input
+              type="text"
+              value={customType}
+              onChange={(e) => setCustomType(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+              placeholder="e.g., Boxing, Jump Rope, Hiking"
+              required
+              autoFocus
+            />
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -54,6 +83,7 @@ export default function CardioForm() {
             <input
               type="number"
               step="1"
+              min="1"
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
@@ -69,6 +99,7 @@ export default function CardioForm() {
             <input
               type="number"
               step="1"
+              min="0"
               value={caloriesBurned}
               onChange={(e) => setCaloriesBurned(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"

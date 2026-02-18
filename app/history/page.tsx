@@ -1,4 +1,5 @@
 import { getHistoryData } from '../actions';
+import HistoryTable from '@/components/HistoryTable';
 
 export const dynamic = 'force-dynamic';
 
@@ -24,65 +25,7 @@ export default async function HistoryPage() {
           <p className="text-gray-600 text-lg">No history yet. Start tracking your progress!</p>
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden border-2 border-gray-200">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-800 text-white">
-                <tr>
-                  <th className="px-6 py-4 text-left font-semibold">Date</th>
-                  <th className="px-6 py-4 text-left font-semibold">Weight</th>
-                  <th className="px-6 py-4 text-left font-semibold">Protein</th>
-                  <th className="px-6 py-4 text-left font-semibold">Calories</th>
-                  <th className="px-6 py-4 text-left font-semibold">Cardio</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {entries.map((entry, idx) => {
-                  const totalProtein = entry.foods.reduce((sum, food) => sum + food.protein, 0);
-                  const totalCalories = entry.foods.reduce((sum, food) => sum + food.calories, 0);
-                  const proteinGoal = Math.round(entry.weight * 1);
-                  const calorieGoal = Math.round(entry.weight * 12);
-
-                  const cardioSummary = entry.cardio.length > 0
-                    ? entry.cardio.map(c => `${c.type} (${c.duration}m, ${c.caloriesBurned} cal)`).join(', ')
-                    : 'None';
-
-                  return (
-                    <tr key={idx} className="hover:bg-gray-50 transition">
-                      <td className="px-6 py-4 font-medium text-gray-900">
-                        {formatDate(entry.date)}
-                      </td>
-                      <td className="px-6 py-4 text-gray-700">
-                        {entry.weight.toFixed(1)} lbs
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-gray-700">
-                          {totalProtein.toFixed(1)}g / {proteinGoal}g
-                        </div>
-                        <div className="text-xs text-gray-500 mt-1">
-                          {((totalProtein / proteinGoal) * 100).toFixed(0)}% of goal
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-gray-700">
-                          {totalCalories} / {calorieGoal} cal
-                        </div>
-                        <div className="text-xs text-gray-500 mt-1">
-                          {((totalCalories / calorieGoal) * 100).toFixed(0)}% of goal
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-gray-700 max-w-md">
-                        <div className="truncate" title={cardioSummary}>
-                          {cardioSummary}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <HistoryTable entries={entries} />
       )}
 
       {entries.length > 0 && (

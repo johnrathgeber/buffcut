@@ -5,7 +5,17 @@ import { TrackerData, DayEntry } from './types';
 const DATA_FILE = path.join(process.cwd(), 'tracker_data.json');
 
 export function getTodayString(): string {
-  return new Date().toISOString().split('T')[0];
+  // Get date in Eastern Time (ET)
+  const etDate = new Date().toLocaleString('en-US', {
+    timeZone: 'America/New_York',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+
+  // Convert from "MM/DD/YYYY" to "YYYY-MM-DD"
+  const [month, day, year] = etDate.split('/');
+  return `${year}-${month}-${day}`;
 }
 
 export function readData(): TrackerData {
@@ -38,9 +48,16 @@ export function getTodayEntry(data: TrackerData): DayEntry | null {
 }
 
 export function getYesterdayEntry(data: TrackerData): DayEntry | null {
-  const yesterday = new Date();
-  yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = yesterday.toISOString().split('T')[0];
+  // Get yesterday's date in Eastern Time (ET)
+  const now = new Date();
+  const etDate = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  etDate.setDate(etDate.getDate() - 1);
+
+  const year = etDate.getFullYear();
+  const month = String(etDate.getMonth() + 1).padStart(2, '0');
+  const day = String(etDate.getDate()).padStart(2, '0');
+  const yesterdayStr = `${year}-${month}-${day}`;
+
   return data.entries.find(entry => entry.date === yesterdayStr) || null;
 }
 
@@ -58,6 +75,7 @@ export function ensureTodayEntry(data: TrackerData): TrackerData {
       weightUpdated: false,
       foods: [],
       cardio: [],
+      steps: 0,
     };
 
     data.entries.push(todayEntry);
