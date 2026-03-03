@@ -87,7 +87,7 @@ export default function HistoryTable({ entries }: HistoryTableProps) {
                         {totalCalories} / {calorieGoal} cal
                       </div>
                       <div className="text-xs text-gray-500 mt-1">
-                        {((totalCalories / calorieGoal) * 100).toFixed(0)}% of goal
+                        {((totalCalories / calorieGoal) * 100).toFixed(0)}% of maintenance
                       </div>
                     </td>
                     <td className="px-6 py-4 text-gray-700 max-w-md">
