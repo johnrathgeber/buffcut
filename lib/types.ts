@@ -31,6 +31,7 @@ export const PRESET_FOODS = [
   { name: 'Protein Bar', protein: 28, calories: 150 },
   { name: 'Protein Shake', protein: 24, calories: 130 },
   { name: 'Plate of Veggies', protein: 2, calories: 50 },
+  { name: 'Hard Boiled Egg', protein: 6, calories: 78 },
 ] as const;
 
 export const CARDIO_TYPES = [
